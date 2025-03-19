@@ -27,7 +27,7 @@ page_bg_img = """
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background: rgba(30, 50, 50, 0.95);
+    background: rgba(30, 30, 50, 0.95);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 15px;
 }
@@ -135,13 +135,14 @@ def create_input_group(title, inputs):
         values = []
         for i, (label, tooltip, key, input_type) in enumerate(inputs):
             with cols[i % 2]:
-                if input_type == "number":
-                    # Set decimal step for Diabetes Pedigree Function
+                if input_type == "float":
+                    value = st.number_input(label, key=key, help=tooltip, format="%.6f", step=0.000001)
+                elif input_type == "number":
                     step = 0.001 if key == "DiabetesPedigreeFunction" else 1
                     value = st.number_input(label, key=key, help=tooltip, step=step)
                 else:
                     value = st.text_input(label, key=key, help=tooltip)
-                values.append(value)
+                values.append(float(value) if input_type == "float" else value)
     return values
 
 # Improved disease prediction function
@@ -219,28 +220,28 @@ if selected == "Parkinsons Prediction":
     with st.container():
         st.markdown("<div class='disease-card'>", unsafe_allow_html=True)
         inputs = [
-            ('MDVP:Fo(Hz)', 'Enter MDVP:Fo(Hz) value', 'fo', 'number'),
-            ('MDVP:Fhi(Hz)', 'Enter MDVP:Fhi(Hz) value', 'fhi', 'number'),
-            ('MDVP:Flo(Hz)', 'Enter MDVP:Flo(Hz) value', 'flo', 'number'),
-            ('MDVP:Jitter(%)', 'Enter MDVP:Jitter(%) value', 'Jitter_percent', 'number'),
-            ('MDVP:Jitter(Abs)', 'Enter MDVP:Jitter(Abs) value', 'Jitter_Abs', 'number'),
-            ('MDVP:RAP', 'Enter MDVP:RAP value', 'RAP', 'number'),
-            ('MDVP:PPQ', 'Enter MDVP:PPQ value', 'PPQ', 'number'),
-            ('Jitter:DDP', 'Enter Jitter:DDP value', 'DDP', 'number'),
-            ('MDVP:Shimmer', 'Enter MDVP:Shimmer value', 'Shimmer', 'number'),
-            ('MDVP:Shimmer(dB)', 'Enter MDVP:Shimmer(dB) value', 'Shimmer_dB', 'number'),
-            ('Shimmer:APQ3', 'Enter Shimmer:APQ3 value', 'APQ3', 'number'),
-            ('Shimmer:APQ5', 'Enter Shimmer:APQ5 value', 'APQ5', 'number'),
-            ('MDVP:APQ', 'Enter MDVP:APQ value', 'APQ', 'number'),
-            ('Shimmer:DDA', 'Enter Shimmer:DDA value', 'DDA', 'number'),
-            ('NHR', 'Enter NHR value', 'NHR', 'number'),
-            ('HNR', 'Enter HNR value', 'HNR', 'number'),
-            ('RPDE', 'Enter RPDE value', 'RPDE', 'number'),
-            ('DFA', 'Enter DFA value', 'DFA', 'number'),
-            ('Spread1', 'Enter spread1 value', 'spread1', 'number'),
-            ('Spread2', 'Enter spread2 value', 'spread2', 'number'),
-            ('D2', 'Enter D2 value', 'D2', 'number'),
-            ('PPE', 'Enter PPE value', 'PPE', 'number')
+            ('MDVP:Fo(Hz)', 'Enter MDVP:Fo(Hz) value', 'fo', 'float'),
+            ('MDVP:Fhi(Hz)', 'Enter MDVP:Fhi(Hz) value', 'fhi', 'float'),
+            ('MDVP:Flo(Hz)', 'Enter MDVP:Flo(Hz) value', 'flo', 'float'),
+            ('MDVP:Jitter(%)', 'Enter MDVP:Jitter(%) value', 'Jitter_percent', 'float'),
+            ('MDVP:Jitter(Abs)', 'Enter MDVP:Jitter(Abs) value', 'Jitter_Abs', 'float'),
+            ('MDVP:RAP', 'Enter MDVP:RAP value', 'RAP', 'float'),
+            ('MDVP:PPQ', 'Enter MDVP:PPQ value', 'PPQ', 'float'),
+            ('Jitter:DDP', 'Enter Jitter:DDP value', 'DDP', 'float'),
+            ('MDVP:Shimmer', 'Enter MDVP:Shimmer value', 'Shimmer', 'float'),
+            ('MDVP:Shimmer(dB)', 'Enter MDVP:Shimmer(dB) value', 'Shimmer_dB', 'float'),
+            ('Shimmer:APQ3', 'Enter Shimmer:APQ3 value', 'APQ3', 'float'),
+            ('Shimmer:APQ5', 'Enter Shimmer:APQ5 value', 'APQ5', 'float'),
+            ('MDVP:APQ', 'Enter MDVP:APQ value', 'APQ', 'float'),
+            ('Shimmer:DDA', 'Enter Shimmer:DDA value', 'DDA', 'float'),
+            ('NHR', 'Enter NHR value', 'NHR', 'float'),
+            ('HNR', 'Enter HNR value', 'HNR', 'float'),
+            ('RPDE', 'Enter RPDE value', 'RPDE', 'float'),
+            ('DFA', 'Enter DFA value', 'DFA', 'float'),
+            ('Spread1', 'Enter spread1 value', 'spread1', 'float'),
+            ('Spread2', 'Enter spread2 value', 'spread2', 'float'),
+            ('D2', 'Enter D2 value', 'D2', 'float'),
+            ('PPE', 'Enter PPE value', 'PPE', 'float')
         ]
         values = create_input_group("Patient Information", inputs)
         
@@ -283,10 +284,10 @@ if selected == "Hypo-Thyroid Prediction":
             ('Age', 'Enter age of the person', 'age', 'number'),
             ('Sex (1 = Male; 0 = Female)', 'Enter sex of the person', 'sex', 'number'),
             ('On Thyroxine (1 = Yes; 0 = No)', 'Enter if the person is on thyroxine', 'on_thyroxine', 'number'),
-            ('TSH Level', 'Enter TSH level', 'tsh', 'number'),
+            ('TSH Level', 'Enter TSH level', 'tsh', 'float'),
             ('T3 Measured (1 = Yes; 0 = No)', 'Enter if T3 was measured', 't3_measured', 'number'),
-            ('T3 Level', 'Enter T3 level', 't3', 'number'),
-            ('TT4 Level', 'Enter TT4 level', 'tt4', 'number')
+            ('T3 Level', 'Enter T3 level', 't3', 'float'),
+            ('TT4 Level', 'Enter TT4 level', 'tt4', 'float')
         ]
         values = create_input_group("Patient Information", inputs)
         
