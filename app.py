@@ -3,89 +3,120 @@ import pickle
 from streamlit_option_menu import option_menu
 import pandas as pd
 
-# Change Name & Logo
-st.set_page_config(page_title="Disease Prediction", page_icon="⚕️")
+st.set_page_config(page_title="Disease Prediction", page_icon="⚕️", layout="wide")
 
-# Hide Streamlit Default UI Elements
+# Hide Default Streamlit UI
 hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+"""
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# Updated background and styling
+# Optimized Layout and Styling
 page_bg_img = """
 <style>
+/* Page Layout */
 [data-testid="stAppViewContainer"] {
-    background: #1a1a1a; /* Light black */
-    color: #ffffff;
+    background: #121212;  /* Dark Mode */
+    color: white;
+    padding-top: 10px;
 }
 
-
+/* Sidebar */
 [data-testid="stSidebar"] {
-    background: rgba(26, 26, 46, 0.95);
+    background: rgba(30, 50, 50, 0.95);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
 }
 
+/* Cards */
 .result-card {
-    background: rgba(0, 255, 0, 0.1);
+    background: rgba(76, 175, 80, 0.15);
     padding: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 255, 0, 0.2);
-    margin-top: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    box-shadow: 0px 3px 10px rgba(76, 175, 80, 0.2);
+    margin-top: 15px;
 }
 
+/* Buttons */
 .stButton>button {
-    background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+    background: linear-gradient(90deg, #4CAF50 0%, #2E7D32 100%);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 10px 25px;
-    font-weight: 600;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
     transition: all 0.3s ease;
 }
-
 .stButton>button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-.stTextInput>div>div>input {
-    background-color: rgba(255, 255, 255, 0.05);
+/* Input Fields */
+.stTextInput>div>div>input, .stNumberInput>div>div>input {
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 14px;
 }
 
+/* Headings */
 h1 {
     background: linear-gradient(90deg, #4CAF50, #81C784);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 2.5em;
-    margin-bottom: 30px;
+    font-size: 2.2em;
+    margin-bottom: 15px;
+    text-align: center;
 }
 
+/* Compact Layout */
+.block-container {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    max-width: 90%;
+    margin: auto;
+}
+
+/* Align Inputs in Two Columns */
+.input-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+}
+
+/* Small Hint Text */
 .hint-text {
     color: #a0a0a0;
-    font-size: 0.8em;
-    margin-top: 5px;
+    font-size: 0.75em;
+    text-align: center;
 }
 </style>
 """
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
 
-st.markdown(page_bg_img, unsafe_allow_html=True)
+
+# Arrange Input Fields in Two Columns
+st.markdown('<div class="input-container">', unsafe_allow_html=True)
+
 
 # Load the saved models
 models = {
-    'diabetes': pickle.load(open('Models/diabetes_model.sav', 'rb')),
-    'heart_disease': pickle.load(open('Models/heart_disease_model.sav', 'rb')),
-    'parkinsons': pickle.load(open('Models/parkinsons_model.sav', 'rb')),
-    'lung_cancer': pickle.load(open('Models/lungs_disease_model.sav', 'rb')),
-    'thyroid': pickle.load(open('Models/Thyroid_model.sav', 'rb'))
+    'diabetes': pickle.load(open("F:\TRIAL\Medical diagnosis using AI\Jupyter Notebook\diabetes_model.sav", 'rb')),
+    'heart_disease': pickle.load(open("F:\TRIAL\Medical diagnosis using AI\Jupyter Notebook\heart_disease_model.sav", 'rb')),
+    'parkinsons': pickle.load(open("F:\TRIAL\Medical diagnosis using AI\Jupyter Notebook\parkinsons_model.sav", 'rb')),
+    'lung_cancer': pickle.load(open("F:\TRIAL\Medical diagnosis using AI\Jupyter Notebook\lungs_disease_model.sav", 'rb')),
+    'thyroid': pickle.load(open("F:\TRIAL\Medical diagnosis using AI\Jupyter Notebook\Thyroid_model.sav", 'rb'))
 }
 
 selected = st.sidebar.radio(
@@ -130,18 +161,11 @@ def predict_disease(model, input_data, disease_name):
                 """,
                 unsafe_allow_html=True
             )
-        
-        # Show confidence score if available
-        if hasattr(model, 'predict_proba'):
-            with col2:
-                confidence = model.predict_proba([input_data])[0][1]
-                st.metric("Confidence", f"{confidence:.2%}")
-        
-        return result
-    except Exception as e:
-        st.error(f"Error in prediction: {str(e)}")
-        return None
+        return result  # Ensure function completes execution
 
+    except Exception as e:
+        st.error(f"Error in prediction: {e}")  # Properly handling errors
+       
 # Main content area
 st.title(f"AI-Powered {selected}")
 
