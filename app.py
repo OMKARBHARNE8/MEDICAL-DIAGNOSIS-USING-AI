@@ -305,7 +305,7 @@ h1 {
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # Get the directory of the script
-MODEL_DIR = os.path.join(os.path.dirname(__file__), "Jupyter Notebook")
+MODEL_DIR = os.path.join(os.path.dirname(__file__), "Models and JupyterNB")
 
 # Model filenames
 model_files = {
